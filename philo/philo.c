@@ -5,72 +5,78 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/29 09:38:06 by hramaros          #+#    #+#             */
-/*   Updated: 2024/07/29 09:47:20 by hramaros         ###   ########.fr       */
+/*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
+/*   Updated: 2024/07/31 23:08:23 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	think(int id)
+t_philo	*init_philos(unsigned int philo_numbers, unsigned int time_to_eat)
 {
-	printf("Philosopher %d is thinking\n", id);
-	usleep(rand() % 1000);
-}
+	unsigned int	i;
+	t_philo			*result;
 
-void	eat(int id)
-{
-	printf("Philosopher %d is eating\n", id);
-	usleep(rand() % 1000);
-}
-
-void	*philosopher_routine(void *arg)
-{
-	t_philosopher	*philosopher;
-
-	philosopher = (t_philosopher *)arg;
-	while (1)
+	result = malloc(sizeof(t_philo) * philo_numbers);
+	if (!result)
+		return (NULL);
+	i = 0;
+	while (i < philo_numbers)
 	{
-		think(philosopher->id);
-		pthread_mutex_lock(philosopher->left_fork);
-		pthread_mutex_lock(philosopher->right_fork);
-		eat(philosopher->id);
-		pthread_mutex_unlock(philosopher->right_fork);
-		pthread_mutex_unlock(philosopher->left_fork);
+		result[i].id = i;
+		result[i].time_to_eat = time_to_eat;
+		i++;
 	}
+	return (result);
+}
+
+void	print_philos(t_philo *philos, int philos_nbr)
+{
+	int	index;
+
+	if (!philos)
+	{
+		printf("No philos was created !\n");
+		return ;
+	}
+	index = 0;
+	while (index < philos_nbr)
+	{
+		printf("philos id: %u has %u of time_to_eat\n", philos[index].id,
+			philos[index].time_to_eat);
+		index++;
+	}
+}
+
+void	*philo_eating(void *philo)
+{
+	printf("philo: %u is eating\n", ((t_philo *)philo)->id);
+	sleep(((t_philo *)philo)->time_to_eat);
 	return (NULL);
 }
 
 int	main(void)
 {
-	srand(time(NULL));
-	// Initialize forks
-	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
+	int philo_numbers;
+	int time_to_eat;
+	int index;
+	t_philo *philos_array;
+
+	philo_numbers = 5;
+	time_to_eat = 1;
+	// 1er etape, init de tous les philos
+	philos_array = init_philos(philo_numbers, time_to_eat);
+	// print_philos(philos_array, philo_numbers);
+	// 2em etape, create and join de tous les philos
+	index = 0;
+	while (index < philo_numbers)
 	{
-		pthread_mutex_init(&forks[i], NULL);
+		pthread_create(&(philos_array[index].thread), NULL, philo_eating,
+			&(philos_array[index]));
+		pthread_join(philos_array[index].thread, NULL);
+		index++;
 	}
-	// Initialize philosophers
-	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
-	{
-		philosophers[i].id = i;
-		philosophers[i].left_fork = &forks[i];
-		philosophers[i].right_fork = &forks[(i + 1) % NUM_PHILOSOPHERS];
-	}
-	// Create philosopher threads
-	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
-	{
-		pthread_create(&philosophers[i].thread, NULL, philosopher_routine,
-			&philosophers[i]);
-	}
-	// Join philosopher threads
-	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
-	{
-		pthread_join(philosophers[i].thread, NULL);
-	}
-	// Destroy mutexes
-	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
-	{
-		pthread_mutex_destroy(&forks[i]);
-	}
+	free(philos_array);
+	// 3em etape, verifier si tous les philos sont en train de manger
 	return (0);
 }
