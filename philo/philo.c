@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/01 00:31:58 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/01 00:39:55 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,32 @@ t_philo	*init_philos(char **argv)
 	return (result);
 }
 
+void	*eat(void *philo)
+{
+	printf("philo %u is eating ...\n", ((t_philo *)philo)->id);
+	sleep(1);
+	return (NULL);
+}
+
 // TODO parse des arguments en long
 int	main(int argc, char **argv)
 {
 	t_philo *philos_array;
+	int index;
 
 	if (!(argc == 4 || argc == 5))
 		return (1);
 	// 1er etape, init de tous les philos
 	philos_array = init_philos(argv);
-	print_philos(philos_array);
+	// print_philos(philos_array);
 	// 2em etape, create and join de tous les philos
+	while (index < philos_array->data->philos_nbr)
+	{
+		pthread_create(&(philos_array[index].thread), NULL, eat,
+			&(philos_array[index]));
+		pthread_join(philos_array[index].thread, NULL);
+		index++;
+	}
 	free(philos_array->data);
 	free(philos_array);
 	// 3em etape, verifier si tous les philos sont en train de manger
