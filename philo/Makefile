@@ -3,6 +3,8 @@ FLAGS = -Wall -Wextra -Werror -g
 NAME = philo
 
 SRCS = philo.c \
+		philo_utils.c \
+		philo_debug.c \
 
 OBJS = $(SRCS:.c=.o)
 
