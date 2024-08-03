@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/02 11:51:29 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/03 05:04:12 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,21 @@ int	is_valid_data(t_data *data)
 pthread_mutex_t	*generate_forks(char **argv)
 {
 	pthread_mutex_t	*result;
+	int				index;
 
 	if (ft_atol(argv[1]) < 0)
 		return (NULL);
 	result = malloc(sizeof(pthread_mutex_t) * (ft_atol(argv[1]) + 1));
 	if (!result)
 		return (printf("Failed to malloc the fork mutex...\n"), NULL);
+	index = 0;
+	while (index < ft_atol(argv[1]))
+	{
+		if (pthread_mutex_init(&(result[index]), NULL) < 0)
+			return (printf("Failed to init fork mutex...\n"), free(result),
+				NULL);
+		index++;
+	}
 	return (result);
 }
 
@@ -47,6 +56,8 @@ t_data	*init_data(char **argv)
 	result->time_to_eat = ft_atol(argv[3]);
 	result->time_to_sleep = ft_atol(argv[4]);
 	result->is_died = 0;
+	if (pthread_mutex_init(&(result->data_mutex), NULL) < 0)
+		return (printf("Failed to init data mutex...\n"), free(result), NULL);
 	if (argv[5])
 		result->eat_to_full = ft_atol(argv[5]);
 	else
@@ -75,87 +86,37 @@ t_philo	*init_philos(char **argv)
 		result[index].pos = index;
 		result[index].data = data;
 		result[index].eating_numbers = 0;
+		result[index].last_eat = get_ms();
+		if (pthread_mutex_init(&(result[index].philo_mutex), NULL) < 0)
+			return (printf("Failed to init philo %d mutex...\n", index),
+				free(result->data), free(result), NULL);
 		index++;
 	}
 	data->philos = result;
 	return (result);
 }
 
-void	take_fork_left(t_philo *philo)
+int	is_any_dying(t_philo *philos)
 {
-	pthread_mutex_lock(&(((philo->data->forks)[(philo->pos + 1)
-				% (philo->data->philos_nbr)])));
-	printf("philo %i has taken fork number :%i\n", philo->id, (philo->pos + 1)
-		% (philo->data->philos_nbr));
-}
+	int	index;
+	int	philo_numbers;
 
-void	take_fork_right(t_philo *philo)
-{
-	pthread_mutex_lock(&((philo->data->forks)[philo->pos]));
-	printf("philo %i has taken fork number :%i\n", philo->id, philo->pos);
-}
-
-void	leave_fork_left(t_philo *philo)
-{
-	pthread_mutex_unlock(&((philo->data->forks)[(philo->pos + 1)
-			% (philo->data->philos_nbr)]));
-}
-
-void	leave_fork_right(t_philo *philo)
-{
-	pthread_mutex_unlock(&((philo->data->forks)[philo->pos]));
-}
-
-void	do_eat(t_philo *philo)
-{
-	if (philo->id % 2 == 0)
+	philo_numbers = philos->data->philos_nbr;
+	index = 0;
+	while (index < philo_numbers)
 	{
-		take_fork_right(philo);
-		take_fork_left(philo);
+		pthread_mutex_lock(&(philos[index].data->data_mutex));
+		if ((get_ms()
+				- philos[index].last_eat) > (unsigned long)(philos[index].data->time_to_die))
+		{
+			philos[index].data->is_died = 1;
+			pthread_mutex_unlock(&(philos[index].data->data_mutex));
+			return (1);
+		}
+		pthread_mutex_unlock(&(philos[index].data->data_mutex));
+		index++;
 	}
-	else
-	{
-		take_fork_left(philo);
-		take_fork_right(philo);
-	}
-	printf("philo %i is eating ...\n", philo->id);
-	if (philo->id % 2 == 0)
-	{
-		leave_fork_left(philo);
-		leave_fork_right(philo);
-	}
-	else
-	{
-		leave_fork_right(philo);
-		leave_fork_left(philo);
-	}
-	philo->eating_numbers += 1;
-}
-
-void	do_sleep(t_philo *philo)
-{
-	printf("philo %i is sleeping ...\n", philo->id);
-}
-
-void	do_think(t_philo *philo)
-{
-	printf("philo %i is thinking ...\n", philo->id);
-}
-
-void	*simule(void *arg)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)arg;
-	while (!philo->data->is_died)
-	{
-		do_eat(philo);
-		usleep((philo)->data->time_to_eat);
-		do_sleep(philo);
-		usleep((philo)->data->time_to_sleep);
-		do_think(philo);
-	}
-	return (NULL);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -165,13 +126,11 @@ int	main(int argc, char **argv)
 
 	if (!(argc == 5 || argc == 6))
 		return (1);
-	// 1er etape, init de tous les philos
 	philos_array = init_philos(argv);
 	if (!philos_array)
 		return (1);
-	// print_philos(philos_array);
-	// print_forks(philos_array);
-	// 2em etape, create and join de tous les philos
+	philos_array->data->start_ms = get_ms();
+	philos_array->data->start_us = get_us();
 	index = 0;
 	while (index < ft_atol(argv[1]))
 	{
@@ -183,8 +142,7 @@ int	main(int argc, char **argv)
 		};
 		index++;
 	}
-	// TODO verifier si un philo doit mourrir ou non
-	while (1)
+	while (!is_any_dying(philos_array))
 		;
 	index = 0;
 	while (index < philos_array->data->philos_nbr)
@@ -199,6 +157,5 @@ int	main(int argc, char **argv)
 	free(philos_array->data->forks);
 	free(philos_array->data);
 	free(philos_array);
-	// 3em etape, verifier si tous les philos sont en train de manger
 	return (0);
 }
