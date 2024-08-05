@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 23:21:02 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/05 13:40:01 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:40:01 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,21 @@ void	ft_usleep(unsigned long timestamp)
 	curr_ms = get_ms();
 	while (get_ms() - curr_ms < timestamp)
 		usleep(1);
+}
+
+void	d_mutex_and_free(t_philo *p_array)
+{
+	int	index;
+
+	index = 0;
+	while (index < p_array->data->p_nbr)
+	{
+		pthread_mutex_destroy(&p_array->data->forks[index]);
+		index++;
+	}
+	pthread_mutex_destroy(&p_array->data->data_mutex);
+	pthread_mutex_destroy(&p_array->data->printf_mutex);
+	free(p_array->data->forks);
+	free(p_array->data);
+	free(p_array);
 }

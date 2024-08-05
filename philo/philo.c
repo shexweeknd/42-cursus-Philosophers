@@ -3,22 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/05 14:19:54 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:55:22 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	is_valid_data(t_data *data)
-{
-	if (data->philos_nbr < 0 || data->time_to_die < 0 || data->time_to_eat < 0
-		|| data->time_to_sleep < 0)
-		return (0);
-	return (1);
-}
 
 pthread_mutex_t	*generate_forks(char **argv)
 {
@@ -51,10 +43,10 @@ t_data	*init_data(char **argv)
 	result->forks = generate_forks(argv);
 	if (!result->forks)
 		return (NULL);
-	result->philos_nbr = ft_atol(argv[1]);
-	result->time_to_die = ft_atol(argv[2]);
-	result->time_to_eat = ft_atol(argv[3]);
-	result->time_to_sleep = ft_atol(argv[4]);
+	result->p_nbr = ft_atol(argv[1]);
+	result->ttd = ft_atol(argv[2]);
+	result->tte = ft_atol(argv[3]);
+	result->tts = ft_atol(argv[4]);
 	result->is_died = 0;
 	if (pthread_mutex_init(&(result->data_mutex), NULL) < 0
 		|| pthread_mutex_init(&(result->data_mutex), NULL) < 0)
@@ -69,7 +61,7 @@ t_data	*init_data(char **argv)
 	return (result);
 }
 
-t_philo	*init_philos(char **argv)
+t_philo	*init_p(char **argv)
 {
 	t_philo	*result;
 	t_data	*data;
@@ -78,102 +70,46 @@ t_philo	*init_philos(char **argv)
 	data = init_data(argv);
 	if (!data)
 		return (NULL);
-	result = malloc(sizeof(t_philo) * (data->philos_nbr));
+	result = malloc(sizeof(t_philo) * (data->p_nbr));
 	if (!result)
 		return (free(data), NULL);
 	index = 0;
-	while (index < data->philos_nbr)
+	while (index < data->p_nbr)
 	{
 		result[index].id = index + 1;
 		result[index].pos = index;
-		result[index].left_fork = (index + 1) % data->philos_nbr;
+		result[index].left_fork = (index + 1) % data->p_nbr;
 		result[index].right_fork = index;
 		result[index].data = data;
 		result[index].eating_numbers = 0;
 		index++;
 	}
-	data->philos = result;
+	data->p = result;
 	return (result);
-}
-
-int	is_any_dying(t_philo *philos)
-{
-	int	index;
-	int	philo_numbers;
-
-	while (get_ms() < philos->data->start_ms)
-		;
-	philo_numbers = philos->data->philos_nbr;
-	index = 0;
-	while (index < philo_numbers)
-	{
-		if ((get_ms()
-				- philos[index].last_eat) >= (unsigned long)(philos[index].data->time_to_die))
-		{
-			pthread_mutex_lock(&(philos[index].data->data_mutex));
-			philos[index].data->is_died = 1;
-			pthread_mutex_unlock(&(philos[index].data->data_mutex));
-			return (1);
-		}
-		index++;
-	}
-	return (0);
-}
-
-void	init_starting(t_philo *philos_array, long philos_nbr)
-{
-	int				index;
-	unsigned long	time_ms;
-	int				decal;
-
-	if (philos_nbr < 5)
-		decal = 100;
-	else
-		decal = 200;
-	index = 0;
-	time_ms = get_ms() + decal;
-	philos_array->data->start_ms = time_ms;
-	while (index < philos_nbr)
-		philos_array[index++].last_eat = time_ms;
 }
 
 int	main(int argc, char **argv)
 {
-	t_philo	*philos_array;
+	t_philo	*p_array;
 	int		index;
 
 	if (!(argc == 5 || argc == 6))
 		return (1);
-	philos_array = init_philos(argv);
-	if (!philos_array)
+	p_array = init_p(argv);
+	if (!p_array)
 		return (1);
-	init_starting(philos_array, ft_atol(argv[1]));
-	index = 0;
-	while (index < ft_atol(argv[1]))
-	{
-		if (pthread_create(&(philos_array[index].thread), NULL, simule,
-				&(philos_array[index])) != 0)
-		{
-			printf("Failed to create the thread: %d\n", index);
-			return (free(philos_array->data), free(philos_array), 1);
-		};
-		index++;
-	}
-	while (!is_any_dying(philos_array))
+	init_starting(p_array, ft_atol(argv[1]));
+	if (!create_threads(p_array, argv))
+		return (1);
+	while (!is_any_dying(p_array))
 		;
 	index = 0;
-	while (index < philos_array->data->philos_nbr)
+	while (index < p_array->data->p_nbr)
 	{
-		if (pthread_join(philos_array[index].thread, NULL) != 0)
-		{
-			printf("Failed to join the thread: %d\n", index);
-			return (free(philos_array->data), free(philos_array), 1);
-		};
-		index++;
+		if (pthread_join(p_array[index++].thread, NULL))
+			return (printf("Failed to join the thread: %d\n", index),
+				free(p_array->data), free(p_array), 1);
 	}
-	// TODO destroy mutexes
-	free(philos_array->data->forks);
-	free(philos_array->data);
-	free(philos_array);
+	d_mutex_and_free(p_array);
 	return (0);
 }

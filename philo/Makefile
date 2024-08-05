@@ -5,7 +5,10 @@ NAME = philo
 SRCS = philo.c \
 		philo_time.c \
 		philo_actions.c \
-		philo_utils.c \
+		philo_actions_utils.c \
+		philo_checker.c \
+		philo_utils_one.c \
+		philo_utils_two.c \
 		philo_debug.c \
 
 OBJS = $(SRCS:.c=.o)
