@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/03 05:04:12 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/05 14:19:54 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,10 @@ t_data	*init_data(char **argv)
 	result->time_to_eat = ft_atol(argv[3]);
 	result->time_to_sleep = ft_atol(argv[4]);
 	result->is_died = 0;
-	if (pthread_mutex_init(&(result->data_mutex), NULL) < 0)
-		return (printf("Failed to init data mutex...\n"), free(result), NULL);
+	if (pthread_mutex_init(&(result->data_mutex), NULL) < 0
+		|| pthread_mutex_init(&(result->data_mutex), NULL) < 0)
+		return (printf("Failed to init data and pf mutexes ...\n"),
+			free(result), NULL);
 	if (argv[5])
 		result->eat_to_full = ft_atol(argv[5]);
 	else
@@ -76,7 +78,7 @@ t_philo	*init_philos(char **argv)
 	data = init_data(argv);
 	if (!data)
 		return (NULL);
-	result = malloc(sizeof(t_philo) * (data->philos_nbr + 1));
+	result = malloc(sizeof(t_philo) * (data->philos_nbr));
 	if (!result)
 		return (free(data), NULL);
 	index = 0;
@@ -84,12 +86,10 @@ t_philo	*init_philos(char **argv)
 	{
 		result[index].id = index + 1;
 		result[index].pos = index;
+		result[index].left_fork = (index + 1) % data->philos_nbr;
+		result[index].right_fork = index;
 		result[index].data = data;
 		result[index].eating_numbers = 0;
-		result[index].last_eat = get_ms();
-		if (pthread_mutex_init(&(result[index].philo_mutex), NULL) < 0)
-			return (printf("Failed to init philo %d mutex...\n", index),
-				free(result->data), free(result), NULL);
 		index++;
 	}
 	data->philos = result;
@@ -101,22 +101,40 @@ int	is_any_dying(t_philo *philos)
 	int	index;
 	int	philo_numbers;
 
+	while (get_ms() < philos->data->start_ms)
+		;
 	philo_numbers = philos->data->philos_nbr;
 	index = 0;
 	while (index < philo_numbers)
 	{
-		pthread_mutex_lock(&(philos[index].data->data_mutex));
 		if ((get_ms()
-				- philos[index].last_eat) > (unsigned long)(philos[index].data->time_to_die))
+				- philos[index].last_eat) >= (unsigned long)(philos[index].data->time_to_die))
 		{
+			pthread_mutex_lock(&(philos[index].data->data_mutex));
 			philos[index].data->is_died = 1;
 			pthread_mutex_unlock(&(philos[index].data->data_mutex));
 			return (1);
 		}
-		pthread_mutex_unlock(&(philos[index].data->data_mutex));
 		index++;
 	}
 	return (0);
+}
+
+void	init_starting(t_philo *philos_array, long philos_nbr)
+{
+	int				index;
+	unsigned long	time_ms;
+	int				decal;
+
+	if (philos_nbr < 5)
+		decal = 100;
+	else
+		decal = 200;
+	index = 0;
+	time_ms = get_ms() + decal;
+	philos_array->data->start_ms = time_ms;
+	while (index < philos_nbr)
+		philos_array[index++].last_eat = time_ms;
 }
 
 int	main(int argc, char **argv)
@@ -129,8 +147,7 @@ int	main(int argc, char **argv)
 	philos_array = init_philos(argv);
 	if (!philos_array)
 		return (1);
-	philos_array->data->start_ms = get_ms();
-	philos_array->data->start_us = get_us();
+	init_starting(philos_array, ft_atol(argv[1]));
 	index = 0;
 	while (index < ft_atol(argv[1]))
 	{
@@ -154,6 +171,7 @@ int	main(int argc, char **argv)
 		};
 		index++;
 	}
+	// TODO destroy mutexes
 	free(philos_array->data->forks);
 	free(philos_array->data);
 	free(philos_array);

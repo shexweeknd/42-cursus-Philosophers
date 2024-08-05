@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 09:38:15 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/03 05:05:29 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/05 13:51:48 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_data
 	unsigned long		start_ms;
 	unsigned long		start_us;
 	pthread_mutex_t		data_mutex;
+	pthread_mutex_t		printf_mutex;
 	pthread_mutex_t		*forks;
 	t_philo				*philos;
 }						t_data;
@@ -42,17 +43,21 @@ typedef struct s_philo
 {
 	int					id;
 	int					pos;
+	int					left_fork;
+	int					right_fork;
 	int					eating_numbers;
 	unsigned long		last_eat;
-	pthread_mutex_t		philo_mutex;
 	pthread_t			thread;
 	t_data				*data;
 }						t_philo;
+
+// TODO the coms are in english, traduct all coms in english
 
 // fonction pour les philos
 void					*simule(void *arg);
 unsigned long			get_ms(void);
 unsigned long			get_us(void);
+void					ft_usleep(unsigned long timestamp);
 
 // fonctions utils pour le parse des args
 long					ft_atol(const char *str);

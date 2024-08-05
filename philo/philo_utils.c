@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 23:21:02 by hramaros          #+#    #+#             */
-/*   Updated: 2024/07/31 23:36:12 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/05 13:40:01 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,13 @@ long	ft_atol(const char *str)
 	}
 	ret *= sign;
 	return (ret);
+}
+
+void	ft_usleep(unsigned long timestamp)
+{
+	unsigned long	curr_ms;
+
+	curr_ms = get_ms();
+	while (get_ms() - curr_ms < timestamp)
+		usleep(1);
 }

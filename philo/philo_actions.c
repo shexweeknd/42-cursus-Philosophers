@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 13:26:04 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/03 05:03:50 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/05 14:16:31 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,34 @@
 
 static void	take_fork_left(t_philo *philo)
 {
-	pthread_mutex_lock(&(((philo->data->forks)[(philo->pos + 1)
-				% (philo->data->philos_nbr)])));
-	printf("[%lu] philo %i has taken a fork number :%i\n", get_ms()
-		- philo->data->start_ms, philo->id, (philo->pos + 1)
-		% (philo->data->philos_nbr));
+	pthread_mutex_lock(&philo->data->forks[philo->left_fork]);
+	pthread_mutex_lock(&(philo->data->printf_mutex));
+	// printf("%lu philo %i has taken a fork number :%i\n", get_ms()
+	// 	- philo->data->start_ms, philo->id, philo->left_fork);
+	printf("%lu %i has taken a fork\n", get_ms() - philo->data->start_ms,
+		philo->id);
+	pthread_mutex_unlock(&(philo->data->printf_mutex));
 }
 
 static void	take_fork_right(t_philo *philo)
 {
-	pthread_mutex_lock(&((philo->data->forks)[philo->pos]));
-	printf("[%lu] philo %i has taken fork number :%i\n", get_ms()
-		- philo->data->start_ms, philo->id, philo->pos);
+	pthread_mutex_lock(&philo->data->forks[philo->right_fork]);
+	pthread_mutex_lock(&(philo->data->printf_mutex));
+	// printf("%lu philo %i has taken fork number :%i\n", get_ms()
+	// 	- philo->data->start_ms, philo->id, philo->right_fork);
+	printf("%lu %i has taken a fork\n", get_ms() - philo->data->start_ms,
+		philo->id);
+	pthread_mutex_unlock(&(philo->data->printf_mutex));
 }
 
 static void	leave_fork_left(t_philo *philo)
 {
-	pthread_mutex_unlock(&((philo->data->forks)[(philo->pos + 1)
-			% (philo->data->philos_nbr)]));
+	pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
 }
 
 static void	leave_fork_right(t_philo *philo)
 {
-	pthread_mutex_unlock(&((philo->data->forks)[philo->pos]));
+	pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
 }
 
 static void	do_eat(t_philo *philo)
@@ -51,8 +56,14 @@ static void	do_eat(t_philo *philo)
 		take_fork_left(philo);
 		take_fork_right(philo);
 	}
-	printf("[%lu] philo %i is eating\n", get_ms() - philo->data->start_ms,
-		philo->id);
+	pthread_mutex_lock(&(philo->data->printf_mutex));
+	printf("%lu %i is eating\n", get_ms() - philo->data->start_ms, philo->id);
+	pthread_mutex_unlock(&(philo->data->printf_mutex));
+	pthread_mutex_lock(&(philo->data->data_mutex));
+	philo->eating_numbers += 1;
+	philo->last_eat = get_ms();
+	pthread_mutex_unlock(&(philo->data->data_mutex));
+	ft_usleep((philo)->data->time_to_eat);
 	if (philo->id % 2 == 0)
 	{
 		leave_fork_left(philo);
@@ -63,47 +74,37 @@ static void	do_eat(t_philo *philo)
 		leave_fork_right(philo);
 		leave_fork_left(philo);
 	}
-	pthread_mutex_lock(&(philo->data->data_mutex));
-	philo->eating_numbers += 1;
-	philo->last_eat = get_ms();
-	usleep(philo->data->time_to_eat * 1e3);
-	pthread_mutex_unlock(&(philo->data->data_mutex));
 }
 
 static void	do_sleep(t_philo *philo)
 {
-	printf("[%lu] philo %i is sleeping\n", get_ms() - philo->data->start_ms,
-		philo->id);
-	usleep(philo->data->time_to_sleep * 1e3);
+	pthread_mutex_lock(&(philo->data->printf_mutex));
+	printf("%lu %i is sleeping\n", get_ms() - philo->data->start_ms, philo->id);
+	pthread_mutex_unlock(&(philo->data->printf_mutex));
 }
 
 static void	do_think(t_philo *philo)
 {
-	printf("[%lu] philo %i is thinking\n", get_ms() - philo->data->start_ms,
-		philo->id);
+	pthread_mutex_lock(&(philo->data->printf_mutex));
+	printf("%lu %i is thinking\n", get_ms() - philo->data->start_ms, philo->id);
+	pthread_mutex_unlock(&(philo->data->printf_mutex));
 }
 
 void	*simule(void *arg)
 {
 	t_philo	*philo;
-	int		is_died;
 
 	philo = (t_philo *)arg;
-	while (get_us() != philo->data->start_us + 500)
+	while (get_ms() < philo->data->start_ms)
 		;
-	pthread_mutex_lock(&(philo->data->data_mutex));
-	is_died = philo->data->is_died;
-	pthread_mutex_unlock(&(philo->data->data_mutex));
-	while (!is_died)
+	if (philo->id % 2)
+		usleep(200);
+	while (!philo->data->is_died)
 	{
 		do_eat(philo);
-		usleep((philo)->data->time_to_eat);
 		do_sleep(philo);
-		usleep((philo)->data->time_to_sleep);
+		ft_usleep((philo)->data->time_to_sleep);
 		do_think(philo);
-		pthread_mutex_lock(&(philo->data->data_mutex));
-		is_died = philo->data->is_died;
-		pthread_mutex_unlock(&(philo->data->data_mutex));
 	}
 	return (NULL);
 }
