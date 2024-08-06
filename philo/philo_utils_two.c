@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:53:53 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/05 16:58:17 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:03:00 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	init_starting(t_philo *p_array, long p_nbr)
 	index = 0;
 	time_ms = get_ms() + decal;
 	p_array->data->start_ms = time_ms;
+	p_array->data->is_full = 0;
 	while (index < p_nbr)
 		p_array[index++].last_eat = time_ms;
 }

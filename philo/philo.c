@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/05 16:55:22 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:03:04 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ t_data	*init_data(char **argv)
 		return (printf("Failed to init data and pf mutexes ...\n"),
 			free(result), NULL);
 	if (argv[5])
-		result->eat_to_full = ft_atol(argv[5]);
+		result->etf = ft_atol(argv[5]);
 	else
-		result->eat_to_full = -1;
+		result->etf = -1;
 	if (!is_valid_data(result))
 		return (free(result), NULL);
 	return (result);
@@ -101,7 +101,7 @@ int	main(int argc, char **argv)
 	init_starting(p_array, ft_atol(argv[1]));
 	if (!create_threads(p_array, argv))
 		return (1);
-	while (!is_any_dying(p_array))
+	while (!is_any_dying(p_array) && !is_everyone_full(p_array))
 		;
 	index = 0;
 	while (index < p_array->data->p_nbr)

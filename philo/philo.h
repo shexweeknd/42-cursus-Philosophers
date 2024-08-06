@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 09:38:15 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/05 17:02:23 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:03:05 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ typedef struct s_data
 	int					tte;
 	int					tts;
 	int					ttd;
-	int					eat_to_full;
+	int					etf;
 	int					is_died;
+	int					is_full;
 	unsigned long		start_ms;
 	unsigned long		start_us;
 	pthread_mutex_t		data_mutex;
@@ -75,5 +76,6 @@ void					print_philos(t_philo *philo);
 // fonctions pour le checker
 int						is_valid_data(t_data *data);
 int						is_any_dying(t_philo *p);
+int						is_everyone_full(t_philo *p);
 
 #endif

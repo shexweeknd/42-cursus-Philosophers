@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_checker.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hramaros <hramaros@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:38:33 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/05 16:39:30 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:02:49 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,33 @@ int	is_any_dying(t_philo *p)
 			return (1);
 		}
 		index++;
+	}
+	return (0);
+}
+
+int	is_everyone_full(t_philo *p)
+{
+	int	index;
+	int	philo_numbers;
+	int	occ;
+
+	while (get_ms() < p->data->start_ms)
+		;
+	philo_numbers = p->data->p_nbr;
+	occ = 0;
+	index = 0;
+	while (index < philo_numbers)
+	{
+		if (p->data->etf > 0 && (p[index].eating_numbers >= p->data->etf))
+			occ++;
+		index++;
+	}
+	if (occ == philo_numbers)
+	{
+		pthread_mutex_lock(&p->data->data_mutex);
+		p->data->is_full = 1;
+		pthread_mutex_unlock(&p->data->data_mutex);
+		return (1);
 	}
 	return (0);
 }
