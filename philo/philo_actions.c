@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 13:26:04 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 11:11:51 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 14:46:00 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,12 @@ static void	do_eat(t_philo *philo)
 	pthread_mutex_lock(&(philo->data->data_mutex));
 	philo->eating_numbers += 1;
 	philo->last_eat = get_ms();
+	philo->is_eating = 1;
 	pthread_mutex_unlock(&(philo->data->data_mutex));
 	ft_msleep((philo)->data->tte);
+	pthread_mutex_lock(&(philo->data->data_mutex));
+	philo->is_eating = 0;
+	pthread_mutex_unlock(&(philo->data->data_mutex));
 	leave_forks(philo);
 }
 

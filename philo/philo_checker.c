@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:38:33 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 10:06:08 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 14:47:12 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	is_any_dying(t_philo *p)
 	index = 0;
 	while (index < philo_numbers)
 	{
-		if ((get_ms()
+		if (!p[index].is_eating && (get_ms()
 				- p[index].last_eat) >= (unsigned long)(p[index].data->ttd))
 		{
 			pthread_mutex_lock(&(p[index].data->data_mutex));

@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 09:38:15 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 10:53:34 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 14:44:24 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_philo
 	int					left_fork;
 	int					right_fork;
 	int					eating_numbers;
+	int					is_eating;
 	unsigned long		last_eat;
 	pthread_t			thread;
 	t_data				*data;

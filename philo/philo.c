@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 11:01:37 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 14:44:57 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ t_philo	*init_p(char **argv)
 		result[index].right_fork = index;
 		result[index].data = data;
 		result[index].eating_numbers = 0;
+		result[index].is_eating = 0;
 		index++;
 	}
 	data->p = result;
