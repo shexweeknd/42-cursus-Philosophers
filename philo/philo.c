@@ -6,24 +6,24 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 14:44:57 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:15:04 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-pthread_mutex_t	*generate_forks(char **argv)
+pthread_mutex_t	*generate_forks(int p_nbr)
 {
 	pthread_mutex_t	*result;
 	int				index;
 
-	if (ft_atol(argv[1]) < 0)
+	if (p_nbr < 0)
 		return (NULL);
-	result = malloc(sizeof(pthread_mutex_t) * (ft_atol(argv[1]) + 1));
+	result = malloc(sizeof(pthread_mutex_t) * p_nbr);
 	if (!result)
 		return (printf("Failed to malloc the fork mutex...\n"), NULL);
 	index = 0;
-	while (index < ft_atol(argv[1]))
+	while (index < p_nbr)
 	{
 		if (pthread_mutex_init(&(result[index]), NULL) < 0)
 			return (printf("Failed to init fork mutex...\n"), free(result),
@@ -37,19 +37,19 @@ t_data	*init_data(char **argv)
 {
 	t_data	*result;
 
-	result = malloc(sizeof(t_data));
+	result = (t_data *)malloc(sizeof(t_data));
 	if (!result)
-		return (NULL);
-	result->forks = generate_forks(argv);
-	if (!result->forks)
 		return (NULL);
 	result->p_nbr = ft_atol(argv[1]);
 	result->ttd = ft_atol(argv[2]);
 	result->tte = ft_atol(argv[3]);
 	result->tts = ft_atol(argv[4]);
 	result->is_died = 0;
+	result->forks = generate_forks(result->p_nbr);
+	if (!(result->forks))
+		return (free(result), NULL);
 	if (pthread_mutex_init(&(result->data_mutex), NULL) < 0
-		|| pthread_mutex_init(&(result->data_mutex), NULL) < 0)
+		|| pthread_mutex_init(&(result->printf_mutex), NULL) < 0)
 		return (printf("Failed to init data and pf mutexes ...\n"),
 			free(result), NULL);
 	if (argv[5])
@@ -57,7 +57,7 @@ t_data	*init_data(char **argv)
 	else
 		result->etf = 0;
 	if (!is_valid_data(result) || result->etf < 0)
-		return (free(result), NULL);
+		return (free(result->forks), free(result), NULL);
 	return (result);
 }
 
