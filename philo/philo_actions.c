@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 13:26:04 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 09:55:09 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 11:11:51 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ void	*simule(void *arg)
 	philo = (t_philo *)arg;
 	while (get_ms() < philo->data->start_ms)
 		;
-	if (philo->id % 2)
-		usleep(200);
+	if (philo->id % 2 == 0)
+		usleep(50);
 	if (philo->data->p_nbr == 1)
 	{
 		take_fork_left(philo);
@@ -68,6 +68,7 @@ void	*simule(void *arg)
 		do_sleep(philo);
 		ft_msleep((philo)->data->tts);
 		do_think(philo);
+		usleep(500);
 	}
 	return (NULL);
 }

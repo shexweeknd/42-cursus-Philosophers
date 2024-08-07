@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/06 11:03:04 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 11:01:37 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ t_data	*init_data(char **argv)
 	if (argv[5])
 		result->etf = ft_atol(argv[5]);
 	else
-		result->etf = -1;
-	if (!is_valid_data(result))
+		result->etf = 0;
+	if (!is_valid_data(result) || result->etf < 0)
 		return (free(result), NULL);
 	return (result);
 }

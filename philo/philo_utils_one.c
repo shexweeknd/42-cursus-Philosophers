@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 23:21:02 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 09:55:01 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 10:53:18 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ long	ft_atol(const char *str)
 	int		sign;
 	long	ret;
 
+	if (!str)
+		return (INT_MIN);
 	i = 0;
 	while (is_space(str[i]))
 		i++;

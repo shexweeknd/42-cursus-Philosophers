@@ -6,12 +6,13 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 09:38:15 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 10:04:55 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 10:53:34 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
+# include <limits.h>
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
