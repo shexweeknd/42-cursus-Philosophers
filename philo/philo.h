@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 09:38:15 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/06 11:03:05 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 10:04:55 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,30 +52,31 @@ typedef struct s_philo
 	t_data				*data;
 }						t_philo;
 
-// TODO the coms are in english, traduct all coms in english
-
-// fonction pour les p
+// functions for the philosophers core program
 void					*simule(void *arg);
-unsigned long			get_ms(void);
-unsigned long			get_us(void);
-void					ft_usleep(unsigned long timestamp);
+void					init_starting(t_philo *p_array, long p_nbr);
+int						create_threads(t_philo *p_array, char **argv);
 void					d_mutex_and_free(t_philo *p_array);
 
-// fonctions pour les actions utils
+// philo actions utils functions
 void					take_forks(t_philo *philo);
 void					leave_forks(t_philo *philo);
 
-// fonctions utils
+// utils functions for everybody
 long					ft_atol(const char *str);
-void					init_starting(t_philo *p_array, long p_nbr);
-int						create_threads(t_philo *p_array, char **argv);
+unsigned long			get_ms(void);
+unsigned long			get_us(void);
+void					ft_msleep(unsigned long timestamp);
 
-// fonctions pour le debug
-void					print_philos(t_philo *philo);
-
-// fonctions pour le checker
+// functions for input checker
 int						is_valid_data(t_data *data);
 int						is_any_dying(t_philo *p);
 int						is_everyone_full(t_philo *p);
+
+// declaration for special case: data->p_nbr == 1
+void					take_fork_left(t_philo *philo);
+
+// functions for debugging
+void					print_philos(t_philo *philo);
 
 #endif

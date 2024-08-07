@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 23:21:02 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/06 11:02:58 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 09:55:01 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ long	ft_atol(const char *str)
 	return (ret);
 }
 
-void	ft_usleep(unsigned long timestamp)
+void	ft_msleep(unsigned long timestamp)
 {
 	unsigned long	curr_ms;
 

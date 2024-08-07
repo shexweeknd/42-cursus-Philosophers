@@ -6,13 +6,13 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:01:03 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/06 11:02:40 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 09:55:49 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	take_fork_left(t_philo *philo)
+void	take_fork_left(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->forks[philo->left_fork]);
 	pthread_mutex_lock(&(philo->data->printf_mutex));

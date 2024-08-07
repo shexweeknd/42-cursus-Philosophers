@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 13:26:04 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/06 11:02:33 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 09:55:09 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	do_eat(t_philo *philo)
 	philo->eating_numbers += 1;
 	philo->last_eat = get_ms();
 	pthread_mutex_unlock(&(philo->data->data_mutex));
-	ft_usleep((philo)->data->tte);
+	ft_msleep((philo)->data->tte);
 	leave_forks(philo);
 }
 
@@ -55,11 +55,18 @@ void	*simule(void *arg)
 		;
 	if (philo->id % 2)
 		usleep(200);
-	while (!(philo->data->is_died || philo->data->is_full))
+	if (philo->data->p_nbr == 1)
+	{
+		take_fork_left(philo);
+		ft_msleep(philo->data->ttd);
+		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
+		return (NULL);
+	}
+	while (!philo->data->is_died && !philo->data->is_full)
 	{
 		do_eat(philo);
 		do_sleep(philo);
-		ft_usleep((philo)->data->tts);
+		ft_msleep((philo)->data->tts);
 		do_think(philo);
 	}
 	return (NULL);

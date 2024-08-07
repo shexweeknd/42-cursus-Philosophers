@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:38:33 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/06 11:02:49 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/07 10:06:08 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	is_valid_data(t_data *data)
 {
-	if (data->p_nbr < 0 || data->ttd < 0 || data->tte < 0 || data->tts < 0)
+	if (data->p_nbr <= 0 || data->ttd <= 0 || data->tte <= 0 || data->tts <= 0)
 		return (0);
 	return (1);
 }
