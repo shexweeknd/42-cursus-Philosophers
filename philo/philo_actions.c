@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 13:26:04 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/09 12:14:54 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:03:56 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 static void	do_eat(t_philo *philo)
 {
 	take_forks(philo);
-	pthread_mutex_lock(&(philo->data->printf_mutex));
 	if (!(get_die_state(philo->data) || get_full_state(philo->data)))
+	{
+		pthread_mutex_lock(&(philo->data->printf_mutex));
 		printf("%lu %i is eating\n", get_ms() - philo->data->start_ms,
 			philo->id);
-	pthread_mutex_unlock(&(philo->data->printf_mutex));
+		pthread_mutex_unlock(&(philo->data->printf_mutex));
+	}
 	pthread_mutex_lock(&(philo->data->data_mutex));
 	philo->eating_numbers += 1;
 	philo->last_eat = get_ms();
@@ -34,20 +36,24 @@ static void	do_eat(t_philo *philo)
 
 static void	do_sleep(t_philo *philo)
 {
-	pthread_mutex_lock(&(philo->data->printf_mutex));
 	if (!(get_die_state(philo->data) || get_full_state(philo->data)))
+	{
+		pthread_mutex_lock(&(philo->data->printf_mutex));
 		printf("%lu %i is sleeping\n", get_ms() - philo->data->start_ms,
 			philo->id);
-	pthread_mutex_unlock(&(philo->data->printf_mutex));
+		pthread_mutex_unlock(&(philo->data->printf_mutex));
+	}
 }
 
 static void	do_think(t_philo *philo)
 {
-	pthread_mutex_lock(&(philo->data->printf_mutex));
 	if (!(get_die_state(philo->data) || get_full_state(philo->data)))
+	{
+		pthread_mutex_lock(&(philo->data->printf_mutex));
 		printf("%lu %i is thinking\n", get_ms() - philo->data->start_ms,
 			philo->id);
-	pthread_mutex_unlock(&(philo->data->printf_mutex));
+		pthread_mutex_unlock(&(philo->data->printf_mutex));
+	}
 }
 
 void	*simule(void *arg)

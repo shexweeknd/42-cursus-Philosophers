@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 20:18:47 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 16:15:04 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:18:13 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ t_data	*init_data(char **argv)
 	result->forks = generate_forks(result->p_nbr);
 	if (!(result->forks))
 		return (free(result), NULL);
-	if (pthread_mutex_init(&(result->data_mutex), NULL) < 0
-		|| pthread_mutex_init(&(result->printf_mutex), NULL) < 0)
+	if (pthread_mutex_init(&(result->printf_mutex), NULL) < 0
+		|| pthread_mutex_init(&(result->data_mutex), NULL) < 0)
 		return (printf("Failed to init data and pf mutexes ...\n"),
 			free(result), NULL);
 	if (argv[5])
@@ -57,7 +57,8 @@ t_data	*init_data(char **argv)
 	else
 		result->etf = 0;
 	if (!is_valid_data(result) || result->etf < 0)
-		return (free(result->forks), free(result), NULL);
+		return (free(result->forks), free(result),
+			printf("\nError...\nProvide correct input values.\n"), NULL);
 	return (result);
 }
 
@@ -95,7 +96,10 @@ int	main(int argc, char **argv)
 	int		index;
 
 	if (!(argc == 5 || argc == 6))
-		return (1);
+		return (printf("\nError...\n"),
+			printf("\nThe syntax is ./philo [philos_nbr] [time_to_die]"),
+			printf(" [time_to_eat] [time_to_sleep] [number_of_eat]\n"),
+			printf("NB: [number_of_eat] is optionnal.\n"), 1);
 	p_array = init_p(argv);
 	if (!p_array)
 		return (1);
