@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 12:07:49 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/09 12:17:59 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/09 13:46:39 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,6 @@ int	get_full_state(t_data *data)
 	pthread_mutex_lock(&data->data_mutex);
 	result = data->is_full;
 	pthread_mutex_unlock(&data->data_mutex);
-	return (result);
-}
-
-int	get_eat_state(t_philo *philo)
-{
-	int	result;
-
-	pthread_mutex_lock(&philo->data->data_mutex);
-	result = philo->is_eating;
-	pthread_mutex_unlock(&philo->data->data_mutex);
 	return (result);
 }
 

@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:38:33 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/09 12:19:53 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/09 13:45:29 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,29 +22,28 @@ int	is_valid_data(t_data *data)
 int	is_any_dying(t_philo *p)
 {
 	int	index;
-	int	philo_numbers;
 
 	while (get_ms() < p->data->start_ms)
 		;
-	philo_numbers = p->data->p_nbr;
 	index = 0;
-	while (index < philo_numbers)
+	while (index < p->data->p_nbr)
 	{
-		if (!get_eat_state(&p[index]) && (get_ms()
+		pthread_mutex_lock(&p[index].data->data_mutex);
+		if (!p[index].is_eating && (get_ms()
 				- p[index].last_eat) >= (unsigned long)(p[index].data->ttd))
 		{
-			pthread_mutex_lock(&(p[index].data->data_mutex));
 			p[index].data->is_died = 1;
-			pthread_mutex_unlock(&(p[index].data->data_mutex));
 			pthread_mutex_lock(&(p[index].data->printf_mutex));
 			printf("%lu %i died\n", get_ms() - p[index].data->start_ms,
 				p[index].id);
 			pthread_mutex_unlock(&(p[index].data->printf_mutex));
+			pthread_mutex_unlock(&(p[index].data->data_mutex));
 			return (1);
 		}
+		pthread_mutex_unlock(&p[index].data->data_mutex);
 		index++;
 	}
-	return (0);
+	return (usleep(50), 0);
 }
 
 int	is_everyone_full(t_philo *p)
@@ -71,5 +70,5 @@ int	is_everyone_full(t_philo *p)
 		pthread_mutex_unlock(&p->data->data_mutex);
 		return (1);
 	}
-	return (0);
+	return (usleep(50), 0);
 }
