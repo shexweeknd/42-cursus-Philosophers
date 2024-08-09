@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:01:03 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 09:55:49 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/09 12:08:30 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	take_fork_left(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->forks[philo->left_fork]);
 	pthread_mutex_lock(&(philo->data->printf_mutex));
-	if (!philo->data->is_died)
+	if (!get_die_state(philo->data))
 		printf("%lu %i has taken a fork\n", get_ms() - philo->data->start_ms,
 			philo->id);
 	pthread_mutex_unlock(&(philo->data->printf_mutex));
@@ -26,7 +26,7 @@ static void	take_fork_right(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->forks[philo->right_fork]);
 	pthread_mutex_lock(&(philo->data->printf_mutex));
-	if (!philo->data->is_died)
+	if (!get_die_state(philo->data))
 		printf("%lu %i has taken a fork\n", get_ms() - philo->data->start_ms,
 			philo->id);
 	pthread_mutex_unlock(&(philo->data->printf_mutex));

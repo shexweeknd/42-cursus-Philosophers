@@ -9,6 +9,7 @@ SRCS = philo.c \
 		philo_checker.c \
 		philo_utils_one.c \
 		philo_utils_two.c \
+		philo_getters.c \
 		philo_debug.c \
 
 OBJS = $(SRCS:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 09:38:15 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 14:44:24 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/09 12:18:14 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,12 @@ int						is_everyone_full(t_philo *p);
 
 // declaration for special case: data->p_nbr == 1
 void					take_fork_left(t_philo *philo);
+
+// philos getters
+int						get_eat_numbers(t_philo *philo);
+int						get_eat_state(t_philo *philo);
+int						get_full_state(t_data *data);
+int						get_die_state(t_data *data);
 
 // functions for debugging
 void					print_philos(t_philo *philo);

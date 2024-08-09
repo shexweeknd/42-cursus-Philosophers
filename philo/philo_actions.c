@@ -6,7 +6,7 @@
 /*   By: hramaros <hramaros@student.42antananari    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 13:26:04 by hramaros          #+#    #+#             */
-/*   Updated: 2024/08/07 14:46:00 by hramaros         ###   ########.fr       */
+/*   Updated: 2024/08/09 12:14:54 by hramaros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	do_eat(t_philo *philo)
 {
 	take_forks(philo);
 	pthread_mutex_lock(&(philo->data->printf_mutex));
-	if (!(philo->data->is_died || philo->data->is_full))
+	if (!(get_die_state(philo->data) || get_full_state(philo->data)))
 		printf("%lu %i is eating\n", get_ms() - philo->data->start_ms,
 			philo->id);
 	pthread_mutex_unlock(&(philo->data->printf_mutex));
@@ -35,7 +35,7 @@ static void	do_eat(t_philo *philo)
 static void	do_sleep(t_philo *philo)
 {
 	pthread_mutex_lock(&(philo->data->printf_mutex));
-	if (!(philo->data->is_died || philo->data->is_full))
+	if (!(get_die_state(philo->data) || get_full_state(philo->data)))
 		printf("%lu %i is sleeping\n", get_ms() - philo->data->start_ms,
 			philo->id);
 	pthread_mutex_unlock(&(philo->data->printf_mutex));
@@ -44,7 +44,7 @@ static void	do_sleep(t_philo *philo)
 static void	do_think(t_philo *philo)
 {
 	pthread_mutex_lock(&(philo->data->printf_mutex));
-	if (!(philo->data->is_died || philo->data->is_full))
+	if (!(get_die_state(philo->data) || get_full_state(philo->data)))
 		printf("%lu %i is thinking\n", get_ms() - philo->data->start_ms,
 			philo->id);
 	pthread_mutex_unlock(&(philo->data->printf_mutex));
@@ -66,7 +66,7 @@ void	*simule(void *arg)
 		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
 		return (NULL);
 	}
-	while (!philo->data->is_died && !philo->data->is_full)
+	while (!get_die_state(philo->data) && !get_full_state(philo->data))
 	{
 		do_eat(philo);
 		do_sleep(philo);
