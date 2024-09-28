@@ -2,7 +2,7 @@
 
 ![example of execution](./.blob/din.png)
 
-This is a project for the 42 cursus that focuses on the dining philosophers problem. The goal of this project is to implement a solution to the problem using multithreading and synchronization techniques.
+This is a project for the 42 cursus that focuses on the dining philosophers problem. The goal of this project is to implement a solution to the problem using multithreading and synchronization techniques while writing a `C` program.
 
 ## Table of Contents
 
