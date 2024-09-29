@@ -64,4 +64,4 @@ Contributions to the philosophers project are welcome. If you find any issues or
 
 This project is from 42 School Common Core Cursurs. I do not owe individually any of the concept mentionned above. Instead I owe the provided code in the repository.
 
-Licensed under the [MIT License](LICENSE).
+Licensed under the [MIT License](https://github.com/shexweeknd/blob/blob/main/LICENSE).
