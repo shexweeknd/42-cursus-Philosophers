@@ -1,6 +1,6 @@
 # 42 Philosophers Project
 
-![example of execution](./.blob/din.png)
+![example of execution](https://github.com/shexweeknd/blob/blob/main/42-cursus-Philosophers/42-cursus-Philosophers-din.png)
 
 This is a project for the 42 cursus that focuses on the dining philosophers problem. The goal of this project is to implement a solution to the problem using multithreading and synchronization techniques while writing a `C` program.
 
@@ -35,7 +35,7 @@ To install and run the philosophers project, follow these steps:
 
 ## Usage
 
-![example of execution](./.blob/eg.png)
+![example of execution](https://github.com/shexweeknd/blob/blob/main/42-cursus-Philosophers/42-cursus-Philosophers-eg.png)
 
 Once the program is running, the philosophers will start their dining process. The program will output the actions of each philosopher, such as when they start eating, finish eating, start sleeping, etc. The program will terminate when a philosopher dies or when all philosophers have eaten the required number of times.
 
@@ -45,7 +45,7 @@ Contributions to the philosophers project are welcome. If you find any issues or
 
 ## License
 
-![42](./.blob/42.png)
+![42](https://github.com/shexweeknd/blob/blob/main/42-cursus-Philosophers/42-cursus-Philosophers-42-logo.png)
 
 This project is from 42 School Common Core Cursurs. I do not owe individually any of the concept mentionned above. Instead I owe the provided code in the repository.
 
