@@ -62,6 +62,6 @@ Contributions to the philosophers project are welcome. If you find any issues or
 
 ![42](https://github.com/shexweeknd/blob/blob/main/42-cursus-Philosophers/42-cursus-Philosophers-42-logo.png)
 
-This project is from 42 School Common Core Cursurs. I do not owe individually any of the concept mentionned above. Instead I owe the provided code in the repository.
+This project is from 42 School Common Core Cursurs. I do not own any of the concept mentionned above. Instead I own the provided code in the repository.
 
 Licensed under the [MIT License](https://github.com/shexweeknd/blob/blob/main/LICENSE).
