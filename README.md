@@ -33,14 +33,17 @@ To install and run the philosophers project, follow these steps:
 git clone https://github.com/shexweeknd/42-cursus-Philosophers.git
 ```
 
-3. Navigate to the project directory:
+2. Navigate to the project directory:
 ```sh
 cd 42-cursus-Philosophers/philo
 ```
 
-5. Compile the project with the command: `make` or `make -n`
+3. Compile the project with the command:
+```sh
+make
+```
 
-6. Run the program:
+5. Run the program:
 ```sh
 ./philo [number_of_philosophers] [time_to_die] [time_to_eat] [time_to_sleep] [number_of_times_each_philosopher_must_eat]
 ```
